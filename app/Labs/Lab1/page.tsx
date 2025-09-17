@@ -171,6 +171,7 @@ export default function Lab1() {
         </table>
       </div>
       <div id="wd-images">
+        
         <h4>Image tag</h4>
         Loading an image from the internet: <br />
         <img
