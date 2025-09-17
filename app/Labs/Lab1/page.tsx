@@ -78,7 +78,7 @@ export default function Lab1() {
         <ul id="wd-my-books">
           <li>Dune</li>
           <li>Lord of the Rings</li>
-          <li>Ender's Game</li>
+          <li>Ender&apos;s Game</li>
           <li>Red Mars</li>
           <li>The Forever War</li>
         </ul>
@@ -171,7 +171,6 @@ export default function Lab1() {
         </table>
       </div>
       <div id="wd-images">
-        
         <h4>Image tag</h4>
         Loading an image from the internet: <br />
         <img

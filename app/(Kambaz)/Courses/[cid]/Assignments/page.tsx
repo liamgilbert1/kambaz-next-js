@@ -1,3 +1,6 @@
+import Link from "next/link";
+
+
 export default function Assignments() {
   return (
     <div id="wd-assignments">
@@ -36,12 +39,12 @@ export default function Assignments() {
         </li>
         <li className="wd-assignment-list-item">
           <li className="wd-assignment-list-item">
-            <a
+            <Link
               href="/Courses/1234/Assignments/123"
               className="wd-assignment-link"
             >
               A3 - JAVASCRIPT + REACT
-            </a>
+            </Link>
             <div>
               Multiple Modules | <b>Not available until </b> May 20 at 12:00am |
               <br></br> <b>Due </b> May 27 at 11:59pm | 100 pts
