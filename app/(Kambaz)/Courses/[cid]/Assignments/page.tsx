@@ -9,6 +9,7 @@ export default function Assignments() {
       <h3 id="wd-assignments-title">
         ASSIGNMENTS 40% of Total <button>+</button>{" "}
       </h3>
+      
       <ul id="wd-assignment-list">
         <li className="wd-assignment-list-item">
           <Link
