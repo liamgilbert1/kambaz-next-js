@@ -320,8 +320,10 @@ export default function Lab1() {
       </a>
       to get dummy text
       <br />
-      Click here to go to GitHub Repo: 
-      <a href="#githubRepo" id="wd-github">GitHub Repo</a>
+      Click here to go to GitHub Repo:
+      <a href="https://github.com/liamgilbert1/kambaz-next-js" id="wd-github">
+        GitHub Repo
+      </a>
       <br />
     </div>
   );
