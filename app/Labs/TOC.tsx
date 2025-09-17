@@ -27,6 +27,14 @@ export default function TOC() {
           Kambaz{" "}
         </Link>{" "}
       </li>
+      <li>
+        <Link
+          href="https://github.com/liamgilbert1/kambaz-next-js"
+          id="wd-github-link"
+        >
+          GitHub Repo{" "}
+        </Link>
+      </li>
     </ul>
   );
 }
