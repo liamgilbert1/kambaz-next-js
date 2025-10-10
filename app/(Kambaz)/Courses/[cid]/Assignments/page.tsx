@@ -1,5 +1,7 @@
 "use client";
 
+import { useParams } from "next/navigation";
+import * as db from "../../../Database";
 import {
   ListGroup,
   ListGroupItem,
@@ -9,13 +11,16 @@ import {
 } from "react-bootstrap";
 import { BsGripVertical, BsSearch } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
-import { FaRegEdit } from "react-icons/fa";
-import LessonControlButtons from "../Modules/LessonControlButtons";
-import ModuleControlButtons from "../Modules/ModuleControlButtons";
-import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import Link from "next/link";
+import ModuleControlButtons from "../Modules/ModuleControlButtons";
+import LessonControlButtons from "../Modules/LessonControlButtons";
+import InputGroupText from "react-bootstrap/esm/InputGroupText";
+import { FaRegEdit } from "react-icons/fa";
 
 export default function Assignments() {
+  const { cid } = useParams();
+  const assignments = db.assignments;
+
   return (
     <div id="wd-assignments">
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -28,7 +33,6 @@ export default function Assignments() {
             id="wd-search-assignment"
           />
         </InputGroup>
-
         <div>
           <Button
             variant="secondary"
@@ -43,8 +47,7 @@ export default function Assignments() {
           </Button>
         </div>
       </div>
-
-      <ListGroup className="rounded-0">
+      <ListGroup id="wd-modules" className="rounded-0">
         <ListGroupItem className="wd-module p-0 mb-5 fs-5 border-gray">
           <div className="wd-title p-3 ps-2 bg-secondary">
             <BsGripVertical className="me-2 fs-3" />
@@ -54,56 +57,24 @@ export default function Assignments() {
           </div>
 
           <ListGroup className="wd-lessons rounded-0">
-            <ListGroupItem className="wd-lesson p-3 ps-1">
-              <BsGripVertical className="me-2 fs-3" />
-              <FaRegEdit className="me-2 fs-5" />
-              <Link
-                href="/Courses/1234/Assignments/123"
-                className="wd-assignment-link text-dark text-decoration-none"
-              >
-                A1 - ENV + HTML
-              </Link>
-              <LessonControlButtons />
-              <div className="text-muted fs-6 mt-1 ps-4">
-                Multiple Modules | <b>Not available until</b> May 6 at 12:00am
-                <br />
-                <b>Due</b> May 13 at 11:59pm | 100 pts
-              </div>
-            </ListGroupItem>
-
-            <ListGroupItem className="wd-lesson p-3 ps-1">
-              <BsGripVertical className="me-2 fs-3" />
-              <FaRegEdit className="me-2 fs-5" />
-              <Link
-                href="/Courses/1234/Assignments/123"
-                className="wd-assignment-link text-dark text-decoration-none"
-              >
-                A2 - CSS + BOOTSTRAP
-              </Link>
-              <LessonControlButtons />
-              <div className="text-muted fs-6 mt-1 ps-4">
-                Multiple Modules | <b>Not available until</b> May 13 at 12:00am
-                <br />
-                <b>Due</b> May 20 at 11:59pm | 100 pts
-              </div>
-            </ListGroupItem>
-
-            <ListGroupItem className="wd-lesson p-3 ps-1">
-              <BsGripVertical className="me-2 fs-3" />
-              <FaRegEdit className="me-2 fs-5" />
-              <Link
-                href="/Courses/1234/Assignments/123"
-                className="wd-assignment-link text-dark text-decoration-none"
-              >
-                A3 - JAVASCRIPT + REACT
-              </Link>
-              <LessonControlButtons />
-              <div className="text-muted fs-6 mt-1 ps-4">
-                Multiple Modules | <b>Not available until</b> May 20 at 12:00am
-                <br />
-                <b>Due</b> May 27 at 11:59pm | 100 pts
-              </div>
-            </ListGroupItem>
+            {assignments
+              .filter((assignment: any) => assignment.course === cid)
+              .map((assignment: any) => (
+                <ListGroupItem
+                  key={assignment._id}
+                  className="wd-lesson p-3 ps-1"
+                >
+                  <BsGripVertical className="me-2 fs-3" />
+                  <FaRegEdit className="me-2 fs-5" />
+                  <Link
+                    href={`/Courses/${cid}/Assignments/${assignment._id}`}
+                    className="wd-assignment-link text-dark text-decoration-none"
+                  >
+                    {assignment.title}
+                  </Link>
+                  <LessonControlButtons />
+                </ListGroupItem>
+              ))}
           </ListGroup>
         </ListGroupItem>
       </ListGroup>

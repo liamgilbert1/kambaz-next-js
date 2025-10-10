@@ -1,77 +1,58 @@
 "use client";
-
 import Link from "next/link";
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { usePathname, useParams } from "next/navigation";
 
 export default function CourseNavigation() {
+  const pathname = usePathname();
+  const { cid } = useParams();
+
+  const links = [
+    "Home",
+    "Modules",
+    "Piazza",
+    "Zoom",
+    "Assignments",
+    "Quizzes",
+    "Grades",
+    "People",
+  ];
+
   return (
     <ListGroup
       id="wd-courses-navigation"
-      className="wd list-group fs-5 rounded-0"
+      className="rounded-0 wd list-group fs-5"
     >
-      <Link
-        href="/Courses/1234/Home"
-        id="wd-course-home-link"
-        className="list-group-item active border-0"
-      >
-        Home
-      </Link>
+      {links.map((label) => {
+        const isExternal = label === "Piazza" || label === "Zoom";
 
-      <Link
-        href="/Courses/1234/Modules"
-        id="wd-course-modules-link"
-        className="list-group-item text-danger border-0"
-      >
-        Modules
-      </Link>
+        const href = isExternal
+          ? label === "Piazza"
+            ? "https://piazza.com/class/mf1li76n4is6m/"
+            : "https://www.zoom.com/"
+          : label === "People"
+          ? `/Courses/${cid}/${label}/Table`
+          : `/Courses/${cid}/${label}`;
 
-      <Link
-        href="https://piazza.com/class/mf1li76n4is6m/"
-        id="wd-course-piazza-link"
-        className="list-group-item text-danger border-0"
-      >
-        Piazza
-      </Link>
+        const active = pathname.includes(label) || pathname.endsWith(label);
 
-      <Link
-        href="https://www.zoom.com/"
-        id="wd-course-zoom-link"
-        className="list-group-item text-danger border-0"
-      >
-        Zoom
-      </Link>
-
-      <Link
-        href="/Courses/1234/Assignments"
-        id="wd-course-assignments-link"
-        className="list-group-item text-danger border-0"
-      >
-        Assignments
-      </Link>
-
-      <Link
-        href="/Courses/1234/Quizzes"
-        id="wd-course-quizzes-link"
-        className="list-group-item text-danger border-0"
-      >
-        Quizzes
-      </Link>
-
-      <Link
-        href="/Courses/1234/Grades"
-        id="wd-course-grades-link"
-        className="list-group-item text-danger border-0"
-      >
-        Grades
-      </Link>
-
-      <Link
-        href="/Courses/1234/People/Table"
-        id="wd-course-people-link"
-        className="list-group-item text-danger border-0"
-      >
-        People
-      </Link>
+        return (
+          <ListGroupItem
+            key={label}
+            as={Link}
+            href={href}
+            target={isExternal ? "_blank" : ""}
+            id={`wd-course-${label.toLowerCase()}-link`}
+            className={`list-group-item border-0 ${
+              active
+                ? "border-start border-4 border-black text-black"
+                : "text-danger"
+            }`}
+          >
+            {label}
+          </ListGroupItem>
+        );
+      })}
     </ListGroup>
   );
 }
