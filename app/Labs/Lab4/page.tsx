@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic"; // solves build error
 import ClickEvent from "./ClickEvent";
 import PassingDataOnEvent from "./PassingDataOnEvent";
 import PassingFunctions from "./PassingFunctions";
