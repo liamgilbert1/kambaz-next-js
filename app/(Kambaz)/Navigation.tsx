@@ -48,9 +48,9 @@ export default function KambazNavigation() {
         <br />
         Account
       </ListGroupItem>
-      {links.map((link) => (
+      {links.map((link, index) => (
         <ListGroupItem
-          key={link.path}
+          key={`${link.path}-${index}`}
           as={Link}
           href={link.path}
           className={`bg-black text-center border-0
