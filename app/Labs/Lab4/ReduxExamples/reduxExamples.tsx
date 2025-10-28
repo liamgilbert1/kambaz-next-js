@@ -1,8 +1,7 @@
 "use client";
-export const dynamic = "force-dynamic"; // solves build error
-import HelloRedux from "./HelloRedux/page";
-import CounterRedux from "./CounterRedux/page";
-import AddRedux from "./AddRedux/page";
+import HelloRedux from "./HelloRedux/helloRedux";
+import CounterRedux from "./CounterRedux/counterRedux";
+import AddRedux from "./AddRedux/addRedux";
 import TodoList from "./todos/TodoList";
 
 export default function ReduxExamples() {
