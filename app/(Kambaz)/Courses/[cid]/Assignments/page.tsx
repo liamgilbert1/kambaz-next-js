@@ -17,8 +17,14 @@ import LessonControlButtons from "../Modules/LessonControlButtons";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { FaRegEdit } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
-import { useState } from "react";
+import {
+  setAssignments,
+  addAssignment,
+  updateAssignment,
+  deleteAssignment,
+} from "./reducer";
+import { useState, useEffect } from "react";
+import * as client from "./client";
 
 export default function Assignments() {
   const { cid } = useParams();
@@ -27,14 +33,41 @@ export default function Assignments() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState<any>(null);
 
+  const fetchAssignments = async () => {
+    if (!cid) return;
+    const fetchedAssignments = await client.findAssignmentsForCourse(
+      cid as string
+    );
+    dispatch(setAssignments(fetchedAssignments));
+  };
+
+  const onRemoveAssignment = async (assignmentId: string) => {
+    await client.deleteAssignment(assignmentId);
+    dispatch(
+      setAssignments(assignments.filter((a: any) => a._id !== assignmentId))
+    );
+  };
+
+  const onUpdateAssignment = async (assignment: any) => {
+    await client.updateAssignment(assignment);
+    const updatedAssignments = assignments.map((a: any) =>
+      a._id === assignment._id ? assignment : a
+    );
+    dispatch(setAssignments(updatedAssignments));
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid]);
+
   const handleDelete = (assignment: any) => {
     setSelectedAssignment(assignment);
     setShowConfirm(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (selectedAssignment) {
-      dispatch(deleteAssignment(selectedAssignment._id));
+      await onRemoveAssignment(selectedAssignment._id);
     }
     setShowConfirm(false);
   };
@@ -91,18 +124,51 @@ export default function Assignments() {
                 >
                   <div>
                     <BsGripVertical className="me-2 fs-3" />
-                    <FaRegEdit className="me-2 fs-5" />
-                    <Link
-                      href={`/Courses/${cid}/Assignments/${assignment._id}`}
-                      className="wd-assignment-link text-dark text-decoration-none"
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() =>
+                        dispatch(
+                          updateAssignment({ ...assignment, editing: true })
+                        )
+                      }
                     >
-                      {assignment.title}
-                    </Link>
+                      <FaRegEdit />
+                    </Button>
+
+                    {!assignment.editing && (
+                      <Link
+                        href={`/Courses/${cid}/Assignments/${assignment._id}`}
+                        className="wd-assignment-link text-dark text-decoration-none"
+                      >
+                        {assignment.title}
+                      </Link>
+                    )}
+                    {assignment.editing && (
+                      <FormControl
+                        className="w-50 d-inline-block"
+                        defaultValue={assignment.title}
+                        onChange={(e) =>
+                          dispatch(
+                            updateAssignment({
+                              ...assignment,
+                              title: e.target.value,
+                            })
+                          )
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            onUpdateAssignment({
+                              ...assignment,
+                              editing: false,
+                            });
+                          }
+                        }}
+                      />
+                    )}
                   </div>
                   <div className="d-flex align-items-center gap-2">
-                    {/* Keep the 3-dot control buttons */}
                     <LessonControlButtons />
-                    {/* Add trash icon next to it */}
                     <Button
                       variant="outline-danger"
                       size="sm"
