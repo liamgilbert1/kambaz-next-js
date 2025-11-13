@@ -1,4 +1,5 @@
 "use client";
+
 import * as enrollmentsClient from "../Enrollments/client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
