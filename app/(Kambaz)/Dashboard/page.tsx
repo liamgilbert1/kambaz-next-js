@@ -153,7 +153,10 @@ export default function Dashboard() {
                 <CardImg src={c.image || "/images/reactjs.jpg"} height={160} />
                 <CardBody>
                   <CardTitle>{c.name}</CardTitle>
-                  <CardText style={{ height: "100px" }}>
+                  <CardText
+                    className="mb-3"
+                    style={{ maxHeight: "100px", overflowY: "auto" }}
+                  >
                     {c.description}
                   </CardText>
 
