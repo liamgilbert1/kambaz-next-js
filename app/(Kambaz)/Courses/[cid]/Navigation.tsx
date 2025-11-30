@@ -31,7 +31,7 @@ export default function CourseNavigation() {
             ? "https://piazza.com/class/mf1li76n4is6m/"
             : "https://www.zoom.com/"
           : label === "People"
-          ? `/Courses/${cid}/${label}/Table`
+          ? `/Courses/${cid}/${label}`
           : `/Courses/${cid}/${label}`;
 
         const active = pathname.includes(label) || pathname.endsWith(label);
