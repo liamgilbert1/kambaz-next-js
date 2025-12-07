@@ -233,6 +233,7 @@ export default function QuizzesPage() {
           </ListGroup>
         </ListGroupItem>
       </ListGroup>
+      
     </div>
   );
 }
