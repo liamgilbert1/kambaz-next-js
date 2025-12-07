@@ -28,6 +28,7 @@ export default function QuizzesPage() {
   const [quizzes, setQuizzes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [attempts, setAttempts] = useState<any>({});
 
   const loadQuizzes = async () => {
     setLoading(true);
@@ -35,6 +36,17 @@ export default function QuizzesPage() {
 
     if (!isFaculty) {
       data = data.filter((q: any) => q.published);
+      const attemptsMap: any = {};
+      for (const quiz of data) {
+        try {
+          const latestAttempt = await client.getLatestAttempt(cid as string, quiz._id);
+          if (latestAttempt) {
+            attemptsMap[quiz._id] = latestAttempt;
+          }
+        } catch (error) {
+        }
+      }
+      setAttempts(attemptsMap);
     }
 
     data.sort((a: any, b: any) => {
@@ -170,6 +182,11 @@ export default function QuizzesPage() {
                     {getAvailabilityLabel(quiz)} | Due{" "}
                     {formatDate(quiz.dueDate) ?? "None"} | {quiz.points ?? 0}{" "}
                     pts | {quiz.questions?.length ?? 0} Questions
+                    {!isFaculty && attempts[quiz._id] && (
+                      <span className="ms-2">
+                        | <strong>Score: {attempts[quiz._id].score}/{attempts[quiz._id].maxScore}</strong>
+                      </span>
+                    )}
                   </div>
                 </div>
 
