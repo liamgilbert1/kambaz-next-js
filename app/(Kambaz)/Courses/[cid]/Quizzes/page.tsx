@@ -17,6 +17,7 @@ import { BsGripVertical, BsSearch, BsCheckCircleFill } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import * as client from "./client";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 export default function QuizzesPage() {
   const { cid } = useParams<{ cid: string }>();
@@ -39,12 +40,14 @@ export default function QuizzesPage() {
       const attemptsMap: any = {};
       for (const quiz of data) {
         try {
-          const latestAttempt = await client.getLatestAttempt(cid as string, quiz._id);
+          const latestAttempt = await client.getLatestAttempt(
+            cid as string,
+            quiz._id
+          );
           if (latestAttempt) {
             attemptsMap[quiz._id] = latestAttempt;
           }
-        } catch (error) {
-        }
+        } catch (error) {}
       }
       setAttempts(attemptsMap);
     }
@@ -59,6 +62,20 @@ export default function QuizzesPage() {
       const s = search.toLowerCase();
       data = data.filter((q: any) => q.title.toLowerCase().includes(s));
     }
+
+    data = await Promise.all(
+      data.map(async (quiz: any) => {
+        try {
+          const questions = await client.findQuestionsForQuiz(
+            cid as string,
+            quiz._id
+          );
+          return { ...quiz, questionsCount: questions.length };
+        } catch (err) {
+          return { ...quiz, questionsCount: 0 };
+        }
+      })
+    );
 
     setQuizzes(data);
     setLoading(false);
@@ -119,7 +136,6 @@ export default function QuizzesPage() {
 
   return (
     <div id="wd-quizzes" className="p-2">
-      {/* Top Bar */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <InputGroup style={{ maxWidth: "300px" }}>
           <InputGroup.Text>
@@ -138,8 +154,6 @@ export default function QuizzesPage() {
           </Button>
         )}
       </div>
-
-      {/* Group Block */}
       <ListGroup className="rounded-0">
         <ListGroupItem className="wd-module p-0 mb-5 fs-5 border-gray">
           <div
@@ -181,16 +195,18 @@ export default function QuizzesPage() {
                   <div className="text-muted small">
                     {getAvailabilityLabel(quiz)} | Due{" "}
                     {formatDate(quiz.dueDate) ?? "None"} | {quiz.points ?? 0}{" "}
-                    pts | {quiz.questions?.length ?? 0} Questions
+                    pts | {quiz.questionsCount ?? 0} Questions
                     {!isFaculty && attempts[quiz._id] && (
                       <span className="ms-2">
-                        | <strong>Score: {attempts[quiz._id].score}/{attempts[quiz._id].maxScore}</strong>
+                        |{" "}
+                        <strong>
+                          Score: {attempts[quiz._id].score}/
+                          {attempts[quiz._id].maxScore}
+                        </strong>
                       </span>
                     )}
                   </div>
                 </div>
-
-                {/* Right-side Canvas-style checkmark */}
                 {quiz.published && (
                   <BsCheckCircleFill
                     className="text-success"
@@ -198,20 +214,21 @@ export default function QuizzesPage() {
                     title="Published"
                   />
                 )}
-
-                {/* Faculty controls */}
                 {isFaculty && (
-                  <Dropdown as={ButtonGroup}>
-                    <Button
-                      variant={
-                        quiz.published ? "outline-success" : "outline-secondary"
-                      }
-                      onClick={() => handleTogglePublish(quiz)}
+                  <Dropdown align="end">
+                    <Dropdown.Toggle
+                      variant="link"
+                      bsPrefix="p-0 m-0 border-0 bg-transparent"
+                      style={{ color: "#333" }}
                     >
-                      {quiz.published ? "Unpublish" : "Publish"}
-                    </Button>
-                    <Dropdown.Toggle split variant="outline-secondary" />
+                      <BsThreeDotsVertical size={22} />
+                    </Dropdown.Toggle>
+
                     <Dropdown.Menu>
+                      <Dropdown.Item onClick={() => handleTogglePublish(quiz)}>
+                        {quiz.published ? "Unpublish" : "Publish"}
+                      </Dropdown.Item>
+
                       <Dropdown.Item
                         onClick={() =>
                           router.push(`/Courses/${cid}/Quizzes/${quiz._id}`)
@@ -223,8 +240,6 @@ export default function QuizzesPage() {
                       <Dropdown.Item onClick={() => handleDelete(quiz._id)}>
                         Delete
                       </Dropdown.Item>
-
-                      <Dropdown.Item disabled>Copy (Optional)</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 )}
@@ -233,7 +248,6 @@ export default function QuizzesPage() {
           </ListGroup>
         </ListGroupItem>
       </ListGroup>
-      
     </div>
   );
 }
