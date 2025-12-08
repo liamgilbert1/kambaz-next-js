@@ -229,9 +229,6 @@ export default function QuizPreview() {
             <div className="d-flex justify-content-between align-items-start mb-2">
               <h5>
                 Question {index + 1}{" "}
-                <Badge bg="info" className="ms-2">
-                  {question.type}
-                </Badge>
               </h5>
               <Badge bg="secondary">{question.points} pts</Badge>
             </div>
